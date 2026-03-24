@@ -3,64 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مافیای کوردی - وەشانی کۆتایی</title>
+    <title>MAFIA PRO - SWEATCOIN STYLE</title>
     
     <link rel="apple-touch-icon" href="https://i.ibb.co/9Hk2mbHV/image.png">
     <link rel="icon" type="image/png" href="https://i.ibb.co/9Hk2mbHV/image.png">
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    
     <style>
-        body { 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
-            background-color: #0d1117; 
-            background-image: radial-gradient(circle at center, #1c2128 0%, #0d1117 100%);
-            color: #c9d1d9; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center;
+        :root {
+            --bg-dark: #050a18;
+            --accent: #00f2ff; /* شینی Sweatcoin */
+            --glass: rgba(255, 255, 255, 0.07);
+            --border: rgba(255, 255, 255, 0.15);
+            --text: #ffffff;
         }
-        .container { width: 100%; max-width: 480px; background: #161b22; padding: 25px; border-radius: 20px; border: 1px solid #30363d; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
-        .logo-img { width: 110px; height: 110px; border-radius: 50%; border: 3px solid #f85149; margin-bottom: 15px; box-shadow: 0 0 20px rgba(248, 81, 73, 0.4); object-fit: cover; }
-        h2 { color: #f85149; margin-bottom: 25px; text-align: center; font-size: 28px; }
-        input, textarea, select { width: 95%; padding: 14px; margin: 10px 0; border-radius: 12px; background: #0d1117; color: #fff; border: 1px solid #30363d; font-size: 16px; }
-        button { width: 100%; cursor: pointer; background: #238636; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 16px; margin: 10px 0; transition: 0.2s; }
-        button:hover { background: #2ea043; transform: scale(1.02); }
-        .btn-host { background: #1f6feb; }
-        .player-item { background: #21262d; padding: 12px; margin: 10px 0; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #58a6ff; }
-        .role-box { font-size: 26px; padding: 25px; border: 3px solid #d29922; border-radius: 15px; background: rgba(210, 153, 34, 0.1); color: #e3b341; margin: 20px 0; font-weight: bold; text-align: center;}
+
+        body { 
+            font-family: 'Inter', 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at top right, #0d1b33, #050a18); 
+            color: var(--text); margin: 0; padding: 20px; 
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+        }
+
+        .container { 
+            width: 100%; max-width: 420px; background: var(--glass); 
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: 30px; border-radius: 35px; border: 1px solid var(--border); 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6); box-sizing: border-box;
+        }
+
+        .logo-img { 
+            width: 100px; height: 100px; border-radius: 25px; 
+            border: 2px solid var(--accent); margin-bottom: 20px; 
+            box-shadow: 0 0 25px rgba(0, 242, 255, 0.4); object-fit: cover;
+        }
+
+        h2 { font-size: 28px; font-weight: 800; text-align: center; margin-bottom: 30px; letter-spacing: 1px; }
+
+        input, textarea, select { 
+            width: 100%; padding: 16px; margin: 12px 0; border-radius: 18px; 
+            background: rgba(0, 0, 0, 0.4); color: #fff; border: 1px solid var(--border); 
+            font-size: 16px; box-sizing: border-box; outline: none; transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(0, 242, 255, 0.2); }
+
+        button { 
+            width: 100%; cursor: pointer; background: var(--accent); color: #000; 
+            border: none; padding: 18px; border-radius: 20px; font-weight: 900; 
+            font-size: 16px; margin: 12px 0; transition: 0.3s;
+        }
+
+        button:active { transform: scale(0.96); }
+        .btn-outline { background: transparent; border: 2px solid var(--accent); color: var(--accent); }
+
+        .player-item { 
+            background: rgba(255, 255, 255, 0.04); padding: 15px; margin: 10px 0; 
+            border-radius: 20px; border: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .role-box { 
+            font-size: 32px; padding: 40px 20px; border-radius: 25px; 
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.15), rgba(0, 242, 255, 0.05)); 
+            color: var(--accent); border: 2px solid var(--accent); 
+            text-align: center; font-weight: 800; box-shadow: 0 0 30px rgba(0, 242, 255, 0.1);
+        }
+
+        .mafia-list { background: rgba(248, 81, 73, 0.1); border: 1px solid #ff4757; padding: 12px; border-radius: 15px; color: #ffbcbc; margin-top: 15px; text-align: center; font-size: 14px; }
+        
+        #actionBox { background: rgba(0, 0, 0, 0.3); border: 1px dashed var(--accent); padding: 20px; border-radius: 20px; margin-top: 20px; }
+
         .hidden { display: none; }
-        .mafia-info { background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; padding: 12px; border-radius: 10px; color: #ffa19a; margin-top: 10px; text-align: center; font-weight: bold; }
-        #actionBox { background: rgba(255, 255, 255, 0.05); border: 1px dashed #d29922; padding: 15px; border-radius: 12px; margin-top: 15px; text-align: center; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div id="setupArea" style="text-align: center;">
-            <img src="https://i.ibb.co/9Hk2mbHV/image.png" alt="Mafia Logo" class="logo-img">
-            <h2>🕵️‍♂️ مافیای ئۆنلاین</h2>
-            <input type="text" id="userName" placeholder="ناوی خۆت بنووسە">
-            <button class="btn-host" onclick="playSound('click'); showHost()">دروستکردنی ژوور (Host)</button>
-            <button onclick="playSound('click'); showJoin()">چوونە ژوورەوە (Join)</button>
+            <img src="https://i.ibb.co/9Hk2mbHV/image.png" alt="Logo" class="logo-img">
+            <h2>MAFIA<span style="color:var(--accent)"> PRO</span></h2>
+            <input type="text" id="userName" placeholder="ناوی خۆت بنووسە...">
+            <button onclick="playSound('click'); showJoin()">JOIN ROOM</button>
+            <button class="btn-outline" onclick="playSound('click'); showHost()">HOST SESSION</button>
         </div>
 
         <div id="hostArea" class="hidden">
-            <h3 style="text-align:center;">🏠 کۆدی ژوور: <span id="roomDisplay" style="color:#d29922; font-size: 32px;">....</span></h3>
-            <textarea id="rolesInput" rows="2">مافیا، مافیا، مافیا، دکتۆر، پۆلیس، هاوڵاتی، هاوڵاتی</textarea>
+            <h3 style="text-align:center; font-size:12px; color:#aaa; margin-bottom:5px;">کۆدی ژوور:</h3>
+            <h1 id="roomDisplay" style="text-align:center; color:var(--accent); margin:0 0 20px 0; font-size:48px;">....</h1>
+            <textarea id="rolesInput" rows="2">مافیا، مافیا، دکتۆر، پۆلیس، هاوڵاتی، هاوڵاتی</textarea>
             <div id="playerList"></div>
-            <button class="btn-host" onclick="playSound('alert'); assignRoles()" style="margin-top: 20px;">🎲 دابەشکردنی ڕۆڵەکان</button>
+            <button onclick="playSound('alert'); assignRoles()">DISTRIBUTE ROLES</button>
         </div>
 
         <div id="joinArea" class="hidden">
             <div id="inputPart">
-                <input type="number" id="roomCode" placeholder="کۆدی ژوور">
-                <button onclick="playSound('click'); joinRoom()">داخڵبوون</button>
+                <input type="number" id="roomCode" placeholder="Enter Room Code">
+                <button onclick="playSound('click'); joinRoom()">CONFIRM</button>
             </div>
-            <div id="statusMsg" style="color:#d29922; margin: 15px 0; text-align: center;"></div>
+            <div id="statusMsg" style="color:var(--accent); text-align: center; margin: 10px 0;"></div>
+            
             <div id="roleDisplay" class="hidden">
                 <div id="roleBox" class="role-box"></div>
-                <div id="mafiaList" class="mafia-info hidden"></div>
+                <div id="mafiaTeammates" class="mafia-list hidden"></div>
                 <div id="actionBox" class="hidden"></div>
             </div>
         </div>
@@ -73,11 +124,7 @@
         gun: new Audio('https://www.soundjay.com/mechanical/gun-gunshot-01.mp3'),
         card: new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3')
     };
-
-    function playSound(name) {
-        sounds[name].currentTime = 0;
-        sounds[name].play().catch(e => {});
-    }
+    function playSound(name) { sounds[name].currentTime = 0; sounds[name].play().catch(e=>{}); }
 
     const firebaseConfig = {
         apiKey: "AIzaSyDzASH3my7ynrQrxAL_rqVXxElL4dDcuyA",
@@ -93,8 +140,8 @@
     let currentRoom = null; let myName = ""; let myId = "";
 
     function showHost() {
-        myName = document.getElementById('userName').value; if(!myName) return alert("سەرەتا ناو بنووسە");
-        currentRoom = Math.floor(1000 + Math.random() * 9000);
+        myName = document.getElementById('userName').value; if(!myName) return alert("ناو بنووسە");
+        currentRoom = Math.floor(1000 + Math.random() * 9999);
         document.getElementById('roomDisplay').innerText = currentRoom;
         document.getElementById('setupArea').classList.add('hidden');
         document.getElementById('hostArea').classList.remove('hidden');
@@ -102,16 +149,16 @@
         db.ref('rooms/' + currentRoom + '/players').on('value', (s) => {
             let h = ""; const p = s.val() || {};
             Object.keys(p).forEach(id => {
-                h += `<div class="player-item"><span>👤 ${p[id].name} ${p[id].status==='out'?'(❌)':''}</span>
-                <div><button style="background:orange; padding:6px; border-radius:8px; border:none; color:white; cursor:pointer;" onclick="playSound('card'); kick('${id}',true)">🗳️ کارت</button>
-                <button style="background:#555; padding:6px; border-radius:8px; border:none; color:white; cursor:pointer;" onclick="playSound('gun'); kick('${id}',false)">🔫 تەقە</button></div></div>`;
+                h += `<div class="player-item"><span>👤 ${p[id].name} ${p[id].status==='out'?'❌':''}</span>
+                <div><button style="width:auto; padding:8px 12px; background:#fbc02d; font-size:12px; color:#000;" onclick="playSound('card'); kick('${id}',true)">CARD</button>
+                <button style="width:auto; padding:8px 12px; background:#444; font-size:12px;" onclick="playSound('gun'); kick('${id}',false)">KILL</button></div></div>`;
             });
             document.getElementById('playerList').innerHTML = h;
         });
     }
 
     function showJoin() {
-        myName = document.getElementById('userName').value; if(!myName) return alert("سەرەتا ناو بنووسە");
+        myName = document.getElementById('userName').value; if(!myName) return alert("ناو بنووسە");
         document.getElementById('setupArea').classList.add('hidden');
         document.getElementById('joinArea').classList.remove('hidden');
     }
@@ -119,55 +166,66 @@
     function joinRoom() {
         const code = document.getElementById('roomCode').value;
         db.ref('rooms/' + code).once('value', (snap) => {
-            if(!snap.exists()) return alert("کۆدەکە هەڵەیە!");
+            if(!snap.exists()) return alert("ژوورەکە بوونی نییە!");
             currentRoom = code;
             const ref = db.ref('rooms/' + code + '/players').push();
             myId = ref.key;
-            ref.set({ name: myName, role: "waiting", status: "alive", card: "" });
+            ref.set({ name: myName, role: "چاوەڕوانبە...", status: "alive", card: "" });
             document.getElementById('inputPart').classList.add('hidden');
+            document.getElementById('statusMsg').innerText = "CONNECTED TO " + code;
+            
             ref.on('value', (s) => {
                 const d = s.val(); if(!d) return;
                 document.getElementById('roleDisplay').classList.remove('hidden');
                 if(d.status === "alive") {
-                    document.getElementById('roleBox').innerHTML = "ڕۆڵەکەت:<br>" + d.role;
-                    if(d.role === "مافیا") showMafiaTeammates();
+                    document.getElementById('roleBox').innerHTML = d.role;
+                    if(d.role === "مافیا") showMafiaInfo();
                 } else {
                     if (d.card === "بەکارهێنرا") {
-                        document.getElementById('roleBox').innerHTML = "<span style='color:#f85149'>تۆ دەرکرایت!</span><br><small style='color:gray;'>کارتەکەت بەکارهێنا</small>";
+                        document.getElementById('roleBox').innerHTML = "<span style='color:#ff4757'>ELIMINATED</span><br><small style='font-size:14px; color:#aaa;'>کارتەکەت بەکارهێنا</small>";
                         document.getElementById('actionBox').classList.add('hidden');
                     } else {
-                        document.getElementById('roleBox').innerHTML = "<span style='color:#f85149'>تۆ دەرکرایت!</span><br><small>کارت: " + (d.card || "بە تەقە") + "</small>";
+                        document.getElementById('roleBox').innerHTML = "<span style='color:#ff4757'>OUT</span><br><small style='font-size:14px; color:#fff;'>کارت: " + (d.card || "🔫") + "</small>";
                         if(d.card === "فەیـس ئۆف") showFaceOff(d.role);
                     }
-                    document.getElementById('mafiaList').classList.add('hidden');
+                    document.getElementById('mafiaTeammates').classList.add('hidden');
                 }
             });
         });
     }
 
-    function showFaceOff(oldRole) {
-        const box = document.getElementById('actionBox'); 
-        box.classList.remove('hidden');
-        box.innerHTML = `<p style='font-size:14px;'>ڕۆڵەکەت بدە بە یەکێک لە زیندووەکان:</p>
-                         <select id="tP"></select>
-                         <button onclick="execFO('${oldRole}')">ناردن و کۆتایی</button>`;
-        
+    function showMafiaInfo() {
         db.ref('rooms/' + currentRoom + '/players').once('value', (s) => {
-            let h = ""; const players = s.val();
-            Object.keys(players).forEach(id => { 
-                if(id !== myId && players[id].status === 'alive') h += `<option value="${id}">${players[id].name}</option>`;
-            });
-            document.getElementById('tP').innerHTML = h;
+            const ps = s.val(); let names = [];
+            Object.keys(ps).forEach(id => { if(ps[id].role === "مافیا" && id !== myId) names.push(ps[id].name); });
+            const listDiv = document.getElementById('mafiaTeammates');
+            if(names.length > 0) {
+                listDiv.innerHTML = "👥 هاوڕێ مافیاکانت: " + names.join(' - ');
+                listDiv.classList.remove('hidden');
+            }
         });
     }
 
-    function execFO(oldRole) {
-        const targetId = document.getElementById('tP').value;
-        if(!targetId) return;
-        db.ref('rooms/' + currentRoom + '/players/' + targetId).update({ role: oldRole });
+    function showFaceOff(oldRole) {
+        const box = document.getElementById('actionBox'); box.classList.remove('hidden');
+        box.innerHTML = `<p style='font-size:14px; margin-bottom:10px;'>ڕۆڵەکەت بدە بە کەسێک:</p>
+                         <select id="targetPlayer"></select>
+                         <button onclick="executeFaceOff('${oldRole}')">گواستنەوە و بەکارهێنان</button>`;
+        db.ref('rooms/' + currentRoom + '/players').once('value', (s) => {
+            let h = ""; Object.keys(s.val()).forEach(id => { 
+                if(id!==myId && s.val()[id].status==='alive') h+=`<option value="${id}">${s.val()[id].name}</option>`; 
+            });
+            document.getElementById('targetPlayer').innerHTML = h;
+        });
+    }
+
+    function executeFaceOff(oldRole) {
+        const target = document.getElementById('targetPlayer').value;
+        if(!target) return;
+        db.ref('rooms/' + currentRoom + '/players/' + target).update({ role: oldRole });
         db.ref('rooms/' + currentRoom + '/players/' + myId).update({ card: "بەکارهێنرا" });
-        alert("ڕۆڵەکەت گواسترایەوە!");
         playSound('click');
+        alert("ڕۆڵەکەت گواسترایەوە!");
     }
 
     function assignRoles() {
@@ -176,25 +234,14 @@
             const r = document.getElementById('rolesInput').value.split('،').map(x => x.trim());
             let sh = r.sort(() => Math.random() - 0.5);
             ids.forEach((id, i) => db.ref('rooms/' + currentRoom + '/players/' + id).update({ role: sh[i] || "هاوڵاتی", status: "alive", card: "" }));
+            alert("ڕۆڵەکان دابەشکران!");
         });
     }
 
-    function kick(id, c) {
-        const cards = ["فەیـس ئۆف", "مێشکی زیرەک", "کەلەپچە (بێدەنگی)", "ئاشکراکردنی ڕۆڵ"];
-        let sel = c ? cards[Math.floor(Math.random()*cards.length)] : "";
+    function kick(id, isCard) {
+        const cards = ["فەیـس ئۆف", "مێشکی زیرەک", "بێدەنگی", "ئاشکراکردن"];
+        let sel = isCard ? cards[Math.floor(Math.random()*cards.length)] : "";
         db.ref('rooms/' + currentRoom + '/players/' + id).update({ status: "out", card: sel });
-    }
-
-    function showMafiaTeammates() {
-        db.ref('rooms/' + currentRoom + '/players').once('value', (s) => {
-            const ps = s.val(); let names = [];
-            Object.keys(ps).forEach(id => { if(ps[id].role === "مافیا" && id !== myId) names.push(ps[id].name); });
-            const listDiv = document.getElementById('mafiaList');
-            if(names.length > 0) {
-                listDiv.innerHTML = "👥 هاوڕێ مافیاکانت: " + names.join(' - ');
-                listDiv.classList.remove('hidden');
-            }
-        });
     }
 </script>
 </body>
