@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAFIA PRO - SWEATCOIN STYLE</title>
+    <title>مافیا پڕۆ - ستایلی مۆدێرن</title>
     
     <link rel="apple-touch-icon" href="https://i.ibb.co/9Hk2mbHV/image.png">
     <link rel="icon" type="image/png" href="https://i.ibb.co/9Hk2mbHV/image.png">
@@ -18,14 +18,14 @@
     <style>
         :root {
             --bg-dark: #050a18;
-            --accent: #00f2ff; /* شینی Sweatcoin */
+            --accent: #00f2ff; 
             --glass: rgba(255, 255, 255, 0.07);
             --border: rgba(255, 255, 255, 0.15);
             --text: #ffffff;
         }
 
         body { 
-            font-family: 'Inter', 'Segoe UI', sans-serif; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
             background: radial-gradient(circle at top right, #0d1b33, #050a18); 
             color: var(--text); margin: 0; padding: 20px; 
             display: flex; flex-direction: column; align-items: center; min-height: 100vh;
@@ -50,14 +50,15 @@
             width: 100%; padding: 16px; margin: 12px 0; border-radius: 18px; 
             background: rgba(0, 0, 0, 0.4); color: #fff; border: 1px solid var(--border); 
             font-size: 16px; box-sizing: border-box; outline: none; transition: 0.3s;
+            font-family: 'Segoe UI', sans-serif;
         }
 
-        input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(0, 242, 255, 0.2); }
+        input:focus { border-color: var(--accent); }
 
         button { 
             width: 100%; cursor: pointer; background: var(--accent); color: #000; 
             border: none; padding: 18px; border-radius: 20px; font-weight: 900; 
-            font-size: 16px; margin: 12px 0; transition: 0.3s;
+            font-size: 16px; margin: 12px 0; transition: 0.3s; font-family: 'Segoe UI', sans-serif;
         }
 
         button:active { transform: scale(0.96); }
@@ -88,26 +89,27 @@
     <div class="container">
         <div id="setupArea" style="text-align: center;">
             <img src="https://i.ibb.co/9Hk2mbHV/image.png" alt="Logo" class="logo-img">
-            <h2>MAFIA<span style="color:var(--accent)"> PRO</span></h2>
-            <input type="text" id="userName" placeholder="ناوی خۆت بنووسە...">
-            <button onclick="playSound('click'); showJoin()">JOIN ROOM</button>
-            <button class="btn-outline" onclick="playSound('click'); showHost()">HOST SESSION</button>
+            <h2>مافیا<span style="color:var(--accent)"> پڕۆ</span></h2>
+            <input type="text" id="userName" placeholder="ناوی خۆت لێرە بنووسە...">
+            <button onclick="playSound('click'); showJoin()">چوونە ژوورەوە</button>
+            <button class="btn-outline" onclick="playSound('click'); showHost()">دروستکردنی ژوور</button>
         </div>
 
         <div id="hostArea" class="hidden">
-            <h3 style="text-align:center; font-size:12px; color:#aaa; margin-bottom:5px;">کۆدی ژوور:</h3>
+            <h3 style="text-align:center; font-size:14px; color:#aaa; margin-bottom:5px;">کۆدی ژوور:</h3>
             <h1 id="roomDisplay" style="text-align:center; color:var(--accent); margin:0 0 20px 0; font-size:48px;">....</h1>
+            <p style="text-align: center; font-size: 12px; color: #aaa;">ڕۆڵەکان بە کۆما (،) جیا بکەرەوە:</p>
             <textarea id="rolesInput" rows="2">مافیا، مافیا، دکتۆر، پۆلیس، هاوڵاتی، هاوڵاتی</textarea>
             <div id="playerList"></div>
-            <button onclick="playSound('alert'); assignRoles()">DISTRIBUTE ROLES</button>
+            <button onclick="playSound('alert'); assignRoles()">🎲 دابەشکردنی ڕۆڵەکان</button>
         </div>
 
         <div id="joinArea" class="hidden">
             <div id="inputPart">
-                <input type="number" id="roomCode" placeholder="Enter Room Code">
-                <button onclick="playSound('click'); joinRoom()">CONFIRM</button>
+                <input type="number" id="roomCode" placeholder="کۆدی ژوور لێرە بنووسە">
+                <button onclick="playSound('click'); joinRoom()">پەیوەندی بکە</button>
             </div>
-            <div id="statusMsg" style="color:var(--accent); text-align: center; margin: 10px 0;"></div>
+            <div id="statusMsg" style="color:var(--accent); text-align: center; margin: 10px 0; font-weight: bold;"></div>
             
             <div id="roleDisplay" class="hidden">
                 <div id="roleBox" class="role-box"></div>
@@ -140,7 +142,7 @@
     let currentRoom = null; let myName = ""; let myId = "";
 
     function showHost() {
-        myName = document.getElementById('userName').value; if(!myName) return alert("ناو بنووسە");
+        myName = document.getElementById('userName').value; if(!myName) return alert("سەرەتا ناوەکەت بنووسە");
         currentRoom = Math.floor(1000 + Math.random() * 9999);
         document.getElementById('roomDisplay').innerText = currentRoom;
         document.getElementById('setupArea').classList.add('hidden');
@@ -150,15 +152,15 @@
             let h = ""; const p = s.val() || {};
             Object.keys(p).forEach(id => {
                 h += `<div class="player-item"><span>👤 ${p[id].name} ${p[id].status==='out'?'❌':''}</span>
-                <div><button style="width:auto; padding:8px 12px; background:#fbc02d; font-size:12px; color:#000;" onclick="playSound('card'); kick('${id}',true)">CARD</button>
-                <button style="width:auto; padding:8px 12px; background:#444; font-size:12px;" onclick="playSound('gun'); kick('${id}',false)">KILL</button></div></div>`;
+                <div><button style="width:auto; padding:8px 12px; background:#fbc02d; font-size:12px; color:#000;" onclick="playSound('card'); kick('${id}',true)">کارت</button>
+                <button style="width:auto; padding:8px 12px; background:#444; font-size:12px; color:white;" onclick="playSound('gun'); kick('${id}',false)">کوشتن</button></div></div>`;
             });
             document.getElementById('playerList').innerHTML = h;
         });
     }
 
     function showJoin() {
-        myName = document.getElementById('userName').value; if(!myName) return alert("ناو بنووسە");
+        myName = document.getElementById('userName').value; if(!myName) return alert("سەرەتا ناوەکەت بنووسە");
         document.getElementById('setupArea').classList.add('hidden');
         document.getElementById('joinArea').classList.remove('hidden');
     }
@@ -166,26 +168,26 @@
     function joinRoom() {
         const code = document.getElementById('roomCode').value;
         db.ref('rooms/' + code).once('value', (snap) => {
-            if(!snap.exists()) return alert("ژوورەکە بوونی نییە!");
+            if(!snap.exists()) return alert("ئەم ژوورە بوونی نییە!");
             currentRoom = code;
             const ref = db.ref('rooms/' + code + '/players').push();
             myId = ref.key;
             ref.set({ name: myName, role: "چاوەڕوانبە...", status: "alive", card: "" });
             document.getElementById('inputPart').classList.add('hidden');
-            document.getElementById('statusMsg').innerText = "CONNECTED TO " + code;
+            document.getElementById('statusMsg').innerText = "پەیوەست بوویت بە ژووری: " + code;
             
             ref.on('value', (s) => {
                 const d = s.val(); if(!d) return;
                 document.getElementById('roleDisplay').classList.remove('hidden');
                 if(d.status === "alive") {
-                    document.getElementById('roleBox').innerHTML = d.role;
+                    document.getElementById('roleBox').innerHTML = "ڕۆڵەکەت:<br>" + d.role;
                     if(d.role === "مافیا") showMafiaInfo();
                 } else {
                     if (d.card === "بەکارهێنرا") {
-                        document.getElementById('roleBox').innerHTML = "<span style='color:#ff4757'>ELIMINATED</span><br><small style='font-size:14px; color:#aaa;'>کارتەکەت بەکارهێنا</small>";
+                        document.getElementById('roleBox').innerHTML = "<span style='color:#ff4757'>دەرکرایت!</span><br><small style='font-size:14px; color:#aaa;'>کارتەکەت بەکارهێنا</small>";
                         document.getElementById('actionBox').classList.add('hidden');
                     } else {
-                        document.getElementById('roleBox').innerHTML = "<span style='color:#ff4757'>OUT</span><br><small style='font-size:14px; color:#fff;'>کارت: " + (d.card || "🔫") + "</small>";
+                        document.getElementById('roleBox').innerHTML = "<span style='color:#ff4757'>دەرکرایت!</span><br><small style='font-size:14px; color:#fff;'>هۆکار: " + (d.card || "🔫 تەقە") + "</small>";
                         if(d.card === "فەیـس ئۆف") showFaceOff(d.role);
                     }
                     document.getElementById('mafiaTeammates').classList.add('hidden');
@@ -202,13 +204,16 @@
             if(names.length > 0) {
                 listDiv.innerHTML = "👥 هاوڕێ مافیاکانت: " + names.join(' - ');
                 listDiv.classList.remove('hidden');
+            } else {
+                listDiv.innerHTML = "تۆ بەتەنیا مافیایت!";
+                listDiv.classList.remove('hidden');
             }
         });
     }
 
     function showFaceOff(oldRole) {
         const box = document.getElementById('actionBox'); box.classList.remove('hidden');
-        box.innerHTML = `<p style='font-size:14px; margin-bottom:10px;'>ڕۆڵەکەت بدە بە کەسێک:</p>
+        box.innerHTML = `<p style='font-size:14px; margin-bottom:10px;'>ڕۆڵەکەت بدە بە یەکێک لە زیندووەکان:</p>
                          <select id="targetPlayer"></select>
                          <button onclick="executeFaceOff('${oldRole}')">گواستنەوە و بەکارهێنان</button>`;
         db.ref('rooms/' + currentRoom + '/players').once('value', (s) => {
@@ -225,7 +230,7 @@
         db.ref('rooms/' + currentRoom + '/players/' + target).update({ role: oldRole });
         db.ref('rooms/' + currentRoom + '/players/' + myId).update({ card: "بەکارهێنرا" });
         playSound('click');
-        alert("ڕۆڵەکەت گواسترایەوە!");
+        alert("ڕۆڵەکەت بە سەرکەوتوویی گواسترایەوە!");
     }
 
     function assignRoles() {
@@ -234,12 +239,12 @@
             const r = document.getElementById('rolesInput').value.split('،').map(x => x.trim());
             let sh = r.sort(() => Math.random() - 0.5);
             ids.forEach((id, i) => db.ref('rooms/' + currentRoom + '/players/' + id).update({ role: sh[i] || "هاوڵاتی", status: "alive", card: "" }));
-            alert("ڕۆڵەکان دابەشکران!");
+            alert("ڕۆڵەکان بەسەر یاریزانەکاندا دابەشکران!");
         });
     }
 
     function kick(id, isCard) {
-        const cards = ["فەیـس ئۆف", "مێشکی زیرەک", "بێدەنگی", "ئاشکراکردن"];
+        const cards = ["فەیـس ئۆف", "مێشکی زیرەک", "بێدەنگی (کەلەپچە)", "ئاشکراکردنی ڕۆڵ"];
         let sel = isCard ? cards[Math.floor(Math.random()*cards.length)] : "";
         db.ref('rooms/' + currentRoom + '/players/' + id).update({ status: "out", card: sel });
     }
