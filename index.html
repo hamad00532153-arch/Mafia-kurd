@@ -3,51 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مافیای ئۆنلاین - وەشانی چاککراو</title>
+    <title>مافیای ئۆنلاین</title>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #0b0b0b; color: #eee; text-align: center; margin: 0; padding: 20px; }
-        .card { background: #1a1a1a; padding: 20px; border-radius: 15px; border: 1px solid #333; max-width: 450px; margin: 20px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        input, textarea { width: 85%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #444; background: #222; color: #fff; font-size: 16px; }
-        button { cursor: pointer; background: #c62828; color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; margin: 5px; transition: 0.3s; }
-        .btn-vote { background: #f57c00; font-size: 12px; } 
-        .btn-kill { background: #424242; font-size: 12px; } 
+        body { font-family: 'Segoe UI', sans-serif; background: #0b0b0b; color: #eee; text-align: center; padding: 20px; }
+        .card { background: #1a1a1a; padding: 20px; border-radius: 15px; border: 1px solid #333; max-width: 400px; margin: 20px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        input, textarea { width: 85%; padding: 12px; margin: 10px 0; border-radius: 8px; background: #222; color: #fff; border: 1px solid #444; }
+        button { cursor: pointer; background: #c62828; color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; margin: 5px; }
         .hidden { display: none; }
-        .player-row { background: #252525; padding: 12px; margin: 8px 0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border-right: 4px solid #c62828; }
-        #roleBox, #cardBox { font-size: 24px; color: #ffeb3b; padding: 20px; border: 2px dashed #ffeb3b; margin-top: 20px; background: rgba(255,235,59,0.1); border-radius: 12px; }
-        .out-msg { color: #ff5252; font-weight: bold; margin-top: 20px; font-size: 20px; border: 1px solid #ff5252; padding: 10px; border-radius: 10px; }
+        .player-row { background: #252525; padding: 10px; margin: 5px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-card { background: #f57c00; font-size: 11px; }
+        .btn-kill { background: #616161; font-size: 11px; }
     </style>
 </head>
 <body>
 
-    <h2>🕵️‍♂️ مافیای ئۆنلاین (Kurdish)</h2>
-
     <div id="setupArea" class="card">
+        <h2>🕵️‍♂️ مافیای ئۆنلاین</h2>
         <input type="text" id="userName" placeholder="ناوی خۆت بنووسە">
-        <button onclick="showHost()">Host (گاد)</button>
-        <button onclick="showJoin()" style="background:#2e7d32">Join (یاریزان)</button>
+        <button onclick="showHost()">دروستکردنی ژوور (Host)</button>
+        <button onclick="showJoin()" style="background:#2e7d32">چوونە ژوور (Join)</button>
     </div>
 
     <div id="hostArea" class="card hidden">
-        <h3>🏠 کۆدی ژوور: <span id="roomDisplay" style="color:#fbc02d">....</span></h3>
-        <p style="font-size:12px; color:#888;">ڕۆڵەکان بە کۆما (،) جیا بکەرەوە:</p>
-        <textarea id="rolesInput" rows="2">مافیا، مافیا، دکتۆر، پۆلیس، هاوڵاتی، هاوڵاتی، هاوڵاتی</textarea>
-        <div id="playerListContainer"></div>
-        <button onclick="assignRoles()" style="background:#1565c0; width:100%; margin-top:10px;">🎲 دابەشکردنی ڕۆڵەکان</button>
+        <h3>کۆدی ژوور: <span id="roomDisplay" style="color:#fbc02d">....</span></h3>
+        <textarea id="rolesInput">مافیا، مافیا، دکتۆر، پۆلیس، هاوڵاتی، هاوڵاتی</textarea>
+        <div id="playerList"></div>
+        <button onclick="assign()" style="background:#1565c0; width:100%; margin-top:10px;">🎲 دابەشکردنی ڕۆڵەکان</button>
     </div>
 
     <div id="joinArea" class="card hidden">
-        <div id="joinInputSection">
-            <input type="number" id="roomCodeInput" placeholder="کۆدی ژوور بنووسە">
-            <button onclick="joinRoom()">چوونە ژوورەوە</button>
-        </div>
-        <div id="statusMsg" style="margin-top:15px; color:#fbc02d;"></div>
-        <div id="roleBox" class="hidden"></div>
-        <div id="outContainer" class="hidden">
-            <div class="out-msg">تۆ لە یارییەکە دەرچوویت!</div>
-            <div id="cardBox" class="hidden"></div>
-        </div>
+        <div id="inputPart"><input type="number" id="roomCode" placeholder="کۆدی ژوور"><button onclick="join()">بچۆ ژوورەوە</button></div>
+        <div id="msg" style="color:#fbc02d; margin-top:10px;"></div>
+        <div id="roleBox" class="hidden" style="font-size:22px; padding:20px; border:2px dashed yellow; margin-top:15px;"></div>
     </div>
 
 <script>
@@ -60,96 +49,73 @@
         messagingSenderId: "861452068901",
         appId: "1:861452068901:web:db81321e9065f5ce1377cc"
     };
-
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    let currentRoom = null;
-    let myName = "";
-
-    const allCards = ["کارت: دوا قسە", "کارت: گۆڕینەوەی ڕۆڵ", "کارت: متمانەی گشتی", "کارت: بێدەنگی", "کارت: شانسێکی تر", "کارت: ناسین"];
+    let currentRoom = null; let myName = "";
 
     function showHost() {
-        myName = document.getElementById('userName').value;
-        if(!myName) return alert("ناو بنووسە");
+        myName = document.getElementById('userName').value; if(!myName) return alert("ناو بنووسە");
         currentRoom = Math.floor(1000 + Math.random() * 9000);
         document.getElementById('roomDisplay').innerText = currentRoom;
         document.getElementById('setupArea').classList.add('hidden');
         document.getElementById('hostArea').classList.remove('hidden');
-
         db.ref('rooms/' + currentRoom).set({ exists: true });
-        db.ref('rooms/' + currentRoom + '/players').on('value', (snap) => {
-            const players = snap.val() || {};
-            let html = "";
-            Object.keys(players).forEach(id => {
-                html += `<div class="player-row">
-                    <span>${players[id].name}</span>
-                    <div>
-                        <button class="btn-vote" onclick="kickPlayer('${id}', true)">🗳️ دەرکردن (کارت)</button>
-                        <button class="btn-kill" onclick="kickPlayer('${id}', false)">🔫 تەقە (بێ کارت)</button>
-                    </div>
-                </div>`;
+        db.ref('rooms/' + currentRoom + '/players').on('value', (s) => {
+            let h = ""; const p = s.val() || {};
+            Object.keys(p).forEach(id => {
+                h += `<div class="player-row"><span>${p[id].name}</span><div>
+                <button class="btn-card" onclick="kick('${id}',true)">🗳️ کارت</button>
+                <button class="btn-kill" onclick="kick('${id}',false)">🔫 تەقە</button>
+                </div></div>`;
             });
-            document.getElementById('playerListContainer').innerHTML = html;
+            document.getElementById('playerList').innerHTML = h;
         });
     }
 
     function showJoin() {
-        myName = document.getElementById('userName').value;
-        if(!myName) return alert("ناو بنووسە");
+        myName = document.getElementById('userName').value; if(!myName) return alert("ناو بنووسە");
         document.getElementById('setupArea').classList.add('hidden');
         document.getElementById('joinArea').classList.remove('hidden');
     }
 
-    function joinRoom() {
-        const code = document.getElementById('roomCodeInput').value;
-        if(!code) return alert("کۆد بنووسە");
-
-        db.ref('rooms/' + code).once('value', (snap) => {
-            if(!snap.exists()) {
-                alert("ئەم ژوورە بوونی نییە! کۆدەکە بپشکنە.");
-            } else {
-                currentRoom = code;
-                const playerRef = db.ref('rooms/' + code + '/players').push();
-                playerRef.set({ name: myName, role: "waiting", status: "alive", card: "" });
-
-                document.getElementById('joinInputSection').classList.add('hidden');
-                document.getElementById('statusMsg').innerText = "بە سەرکەوتوویی چوویتە ژوورەوە. چاوەڕێی گاد بکە...";
-                
-                playerRef.on('value', (s) => {
-                    const data = s.val();
-                    if(!data) return;
-                    if(data.role !== "waiting" && data.status === "alive") {
-                        document.getElementById('roleBox').innerHTML = "ڕۆڵی تۆ: <br>" + data.role;
-                        document.getElementById('roleBox').classList.remove('hidden');
+    function join() {
+        const code = document.getElementById('roomCode').value;
+        db.ref('rooms/' + code).once('value', (s) => {
+            if(!s.exists()) return alert("ژوورەکە نییە!");
+            currentRoom = code;
+            const ref = db.ref('rooms/' + code + '/players').push();
+            ref.set({ name: myName, role: "waiting", status: "alive", card: "" });
+            document.getElementById('inputPart').classList.add('hidden');
+            document.getElementById('msg').innerText = "لە ژوورەکەیت، چاوەڕێی گاد بکە...";
+            ref.on('value', (v) => {
+                const d = v.val();
+                if(d && d.role !== "waiting") {
+                    if(d.status === "out") {
+                        document.getElementById('roleBox').innerHTML = d.card ? "تۆ دەرکرایت! <br>🎴 " + d.card : "تۆ کوژراویت (بە تەقە)! <br>هیچ کارتێکت نییە.";
+                    } else {
+                        document.getElementById('roleBox').innerHTML = "ڕۆڵەکەت: " + d.role;
                     }
-                    if(data.status === "out") {
-                        document.getElementById('roleBox').classList.add('hidden');
-                        document.getElementById('outContainer').classList.remove('hidden');
-                        document.getElementById('cardBox').innerHTML = data.card ? "🎴 " + data.card : "تۆ بە تەقە کوژراویت، کارتت نییە.";
-                        document.getElementById('cardBox').classList.remove('hidden');
-                    }
-                });
-            }
+                    document.getElementById('roleBox').classList.remove('hidden');
+                }
+            });
         });
     }
 
-    function assignRoles() {
-        db.ref('rooms/' + currentRoom + '/players').once('value', (snap) => {
-            const players = snap.val();
-            if(!players) return alert("یاریزان نییە");
-            const ids = Object.keys(players);
-            const roles = document.getElementById('rolesInput').value.split('،').map(r => r.trim());
-            let shuffled = roles.sort(() => Math.random() - 0.5);
-            ids.forEach((id, i) => {
-                db.ref('rooms/' + currentRoom + '/players/' + id).update({ role: shuffled[i] || "هاوڵاتی" });
-            });
+    function assign() {
+        db.ref('rooms/' + currentRoom + '/players').once('value', (s) => {
+            const p = s.val(); if(!p) return;
+            const ids = Object.keys(p);
+            const r = document.getElementById('rolesInput').value.split('،').map(x => x.trim());
+            let sh = r.sort(() => Math.random() - 0.5);
+            ids.forEach((id, i) => db.ref('rooms/' + currentRoom + '/players/' + id).update({ role: sh[i] || "هاوڵاتی" }));
             alert("ڕۆڵەکان نێردران!");
         });
     }
 
-    function kickPlayer(id, withCard) {
-        let selectedCard = withCard ? allCards[Math.floor(Math.random() * allCards.length)] : "";
-        db.ref('rooms/' + currentRoom + '/players/' + id).update({ status: "out", card: selectedCard });
+    function kick(id, hasCard) {
+        const cards = ["کارتی دوا قسە", "کارتی متمانەی گشتی", "کارتی بێدەنگی", "کارتی شانسێکی تر"];
+        let selected = hasCard ? cards[Math.floor(Math.random() * cards.length)] : "";
+        db.ref('rooms/' + currentRoom + '/players/' + id).update({ status: "out", card: selected });
     }
 </script>
 </body>
