@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مافیای کوردی</title>
+    <title>مافیای کوردی - وەشانی کۆتایی</title>
     
     <link rel="apple-touch-icon" href="https://i.ibb.co/9Hk2mbHV/image.png">
     <link rel="icon" type="image/png" href="https://i.ibb.co/9Hk2mbHV/image.png">
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
@@ -32,6 +31,7 @@
         .role-box { font-size: 26px; padding: 25px; border: 3px solid #d29922; border-radius: 15px; background: rgba(210, 153, 34, 0.1); color: #e3b341; margin: 20px 0; font-weight: bold; text-align: center;}
         .hidden { display: none; }
         .mafia-info { background: rgba(248, 81, 73, 0.1); border: 1px solid #f85149; padding: 12px; border-radius: 10px; color: #ffa19a; margin-top: 10px; text-align: center; font-weight: bold; }
+        #actionBox { background: rgba(255, 255, 255, 0.05); border: 1px dashed #d29922; padding: 15px; border-radius: 12px; margin-top: 15px; text-align: center; }
     </style>
 </head>
 <body>
@@ -61,7 +61,7 @@
             <div id="roleDisplay" class="hidden">
                 <div id="roleBox" class="role-box"></div>
                 <div id="mafiaList" class="mafia-info hidden"></div>
-                <div id="actionBox" class="hidden" style="margin-top:20px; padding:15px; border:1px dashed #fff; border-radius: 12px;"></div>
+                <div id="actionBox" class="hidden"></div>
             </div>
         </div>
     </div>
@@ -123,7 +123,7 @@
             currentRoom = code;
             const ref = db.ref('rooms/' + code + '/players').push();
             myId = ref.key;
-            ref.set({ name: myName, role: "waiting", status: "alive" });
+            ref.set({ name: myName, role: "waiting", status: "alive", card: "" });
             document.getElementById('inputPart').classList.add('hidden');
             ref.on('value', (s) => {
                 const d = s.val(); if(!d) return;
@@ -132,11 +132,42 @@
                     document.getElementById('roleBox').innerHTML = "ڕۆڵەکەت:<br>" + d.role;
                     if(d.role === "مافیا") showMafiaTeammates();
                 } else {
-                    document.getElementById('roleBox').innerHTML = "<span style='color:#f85149'>تۆ دەرکرایت!</span><br><small style='font-size:16px'>کارت: " + (d.card || "بە تەقە") + "</small>";
+                    if (d.card === "بەکارهێنرا") {
+                        document.getElementById('roleBox').innerHTML = "<span style='color:#f85149'>تۆ دەرکرایت!</span><br><small style='color:gray;'>کارتەکەت بەکارهێنا</small>";
+                        document.getElementById('actionBox').classList.add('hidden');
+                    } else {
+                        document.getElementById('roleBox').innerHTML = "<span style='color:#f85149'>تۆ دەرکرایت!</span><br><small>کارت: " + (d.card || "بە تەقە") + "</small>";
+                        if(d.card === "فەیـس ئۆف") showFaceOff(d.role);
+                    }
                     document.getElementById('mafiaList').classList.add('hidden');
                 }
             });
         });
+    }
+
+    function showFaceOff(oldRole) {
+        const box = document.getElementById('actionBox'); 
+        box.classList.remove('hidden');
+        box.innerHTML = `<p style='font-size:14px;'>ڕۆڵەکەت بدە بە یەکێک لە زیندووەکان:</p>
+                         <select id="tP"></select>
+                         <button onclick="execFO('${oldRole}')">ناردن و کۆتایی</button>`;
+        
+        db.ref('rooms/' + currentRoom + '/players').once('value', (s) => {
+            let h = ""; const players = s.val();
+            Object.keys(players).forEach(id => { 
+                if(id !== myId && players[id].status === 'alive') h += `<option value="${id}">${players[id].name}</option>`;
+            });
+            document.getElementById('tP').innerHTML = h;
+        });
+    }
+
+    function execFO(oldRole) {
+        const targetId = document.getElementById('tP').value;
+        if(!targetId) return;
+        db.ref('rooms/' + currentRoom + '/players/' + targetId).update({ role: oldRole });
+        db.ref('rooms/' + currentRoom + '/players/' + myId).update({ card: "بەکارهێنرا" });
+        alert("ڕۆڵەکەت گواسترایەوە!");
+        playSound('click');
     }
 
     function assignRoles() {
