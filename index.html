@@ -3,96 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAFIA ULTRA PRO MAX + AI</title>
+    <title>MAFIA ULTRA - FINAL VERSION</title>
 
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 
     <style>
-        :root { --accent: #00f2ff; --bg: #000; --card: #111; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; overflow: hidden; height: 100vh; }
-        .app-header { display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid #222; align-items: center; background: #000; }
-        .container { padding: 20px; display: flex; flex-direction: column; align-items: center; height: 85vh; justify-content: flex-start; overflow-y: auto; }
-        .main-card { width: 100%; max-width: 400px; background: var(--card); border-radius: 35px; padding: 25px; border: 1px solid #333; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        input, textarea { width: 90%; padding: 15px; margin: 10px 0; border-radius: 15px; border: 1px solid #444; background: #000; color: #fff; text-align: center; }
-        button { width: 95%; padding: 16px; margin: 8px 0; border-radius: 18px; border: none; background: var(--accent); color: #000; font-weight: 900; cursor: pointer; transition: 0.2s; }
+        :root { --accent: #00f2ff; --bg: #02030a; --card: rgba(0,0,0,0.7); }
+        
+        /* 🌌 ANIMATED GRID BACKGROUND */
+        body { margin: 0; background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; height: 100vh; }
+        body::before {
+            content: ""; position: absolute; width: 200%; height: 200%; z-index: -1;
+            background: linear-gradient(#00f2ff11 1px, transparent 1px), linear-gradient(90deg, #00f2ff11 1px, transparent 1px);
+            background-size: 50px 50px; animation: gridMove 20s linear infinite;
+        }
+        @keyframes gridMove { from { transform: translate(0,0); } to { transform: translate(-100px,-100px); } }
+
+        .container { padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        
+        /* 💎 GLASS CARD */
+        .main-card { 
+            width: 100%; max-width: 420px; background: var(--card); backdrop-filter: blur(20px);
+            border-radius: 35px; padding: 30px; border: 1px solid #00f2ff44; 
+            text-align: center; box-shadow: 0 0 30px rgba(0,242,255,0.2); margin-top: 20px;
+        }
+
+        .logo { font-size: 32px; font-weight: 900; background: linear-gradient(90deg, #00f2ff, #ff00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 3px; }
+
+        input, textarea, select { width: 90%; padding: 15px; margin: 10px 0; border-radius: 15px; border: 1px solid #333; background: #000; color: #fff; text-align: center; }
+        
+        button { 
+            width: 100%; padding: 16px; margin: 8px 0; border-radius: 20px; border: none; 
+            background: linear-gradient(45deg, #00f2ff, #0066ff); color: white; font-weight: 900; 
+            cursor: pointer; box-shadow: 0 5px 15px rgba(0,242,255,0.4); transition: 0.3s;
+        }
         button:active { transform: scale(0.95); }
-        .btn-outline { background: none; color: var(--accent); border: 2px solid var(--accent); }
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 70px; background: #1a1a1a; display: flex; justify-content: space-around; align-items: center; border-radius: 25px 25px 0 0; z-index: 100; }
+
+        .role-display { font-size: 35px; color: var(--accent); font-weight: 900; margin: 20px 0; text-shadow: 0 0 20px var(--accent); }
+        #chatBox { height: 150px; overflow-y: auto; background: rgba(0,0,0,0.5); border-radius: 15px; padding: 10px; margin: 15px 0; border: 1px solid #222; text-align: right; }
+        
+        .player-tag { display: inline-block; padding: 8px 12px; margin: 4px; background: #111; border-radius: 10px; border: 1px solid #333; font-size: 13px; }
         .hidden { display: none; }
-        .player-tag { background: #222; padding: 10px; margin: 5px; border-radius: 10px; display: inline-block; font-size: 13px; }
-        #chatBox { height: 120px; overflow-y: auto; background: #000; border-radius: 15px; padding: 10px; margin: 10px 0; text-align: right; font-size: 13px; border: 1px solid #222; }
-        .role-box { font-size: 30px; color: var(--accent); font-weight: 900; margin: 15px 0; text-shadow: 0 0 15px rgba(0,242,255,0.3); }
-        #timer { font-size: 20px; color: #ff4757; font-weight: bold; margin: 10px 0; }
+        .glitch { animation: glitchEffect 0.2s infinite; }
+        @keyframes glitchEffect { 0% { transform: translate(2px,0); } 50% { transform: translate(-2px,0); } 100% { transform: translate(2px,0); } }
     </style>
 </head>
 <body>
 
-<div class="app-header">
-    <div style="font-size: 20px;">⚙️</div>
-    <div style="font-weight: bold; color: var(--accent);">MAFIA ULTRA AI</div>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Flag_of_Kurdistan.svg" width="30">
-</div>
-
 <div class="container">
-    <div id="setupArea" class="main-card">
-        <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_m6cu98v2.json" speed="1" style="width: 150px; height: 150px; margin: 0 auto;" loop autoplay></lottie-player>
-        <h2>بەخێربێیت، حەمەد</h2>
-        <input type="text" id="userNameInput" placeholder="ناوەکەت لێرە بنووسە">
-        <button onclick="showJoin()">چوونە ژوورەوە</button>
-        <button class="btn-outline" onclick="showHost()">دروستکردنی ژوور (گاد)</button>
-    </div>
+    <div class="main-card" id="ui-box">
+        <h1 class="logo">MAFIA ULTRA</h1>
 
-    <div id="hostArea" class="main-card hidden">
-        <h3>کۆدی ژوور: <span id="roomDisplay" style="color:var(--accent)">-</span></h3>
-        <p style="font-size: 12px; color: #888;">ڕۆڵەکان بە کۆما جیا بکەرەوە</p>
-        <textarea id="rolesList">مافیا، مافیا، دکتۆر، پۆلیس، هاوڵاتی، هاوڵاتی</textarea>
-        <div id="playersInRoom"></div>
-        <button onclick="distributeRoles()">🎲 دابەشکردن و دەستپێکردن</button>
-        <button class="btn-outline" onclick="startAI()">🤖 زیادکردنی AI</button>
-    </div>
-
-    <div id="gameArea" class="main-card hidden">
-        <div id="phaseDisplay" style="font-weight: bold; color: #aaa;">قۆناغ: چاوەڕوانبە...</div>
-        <div id="timer">00</div>
-        <div id="roleDisplay" class="role-box">؟</div>
-        <div id="mafiaPartners" style="color: #ff4757; font-size: 14px; margin-bottom: 10px;"></div>
-        
-        <div id="chatBox"></div>
-        <div style="display: flex; gap: 5px;">
-            <input type="text" id="msgInput" placeholder="نامە..." style="flex: 1; margin: 0;">
-            <button onclick="sendMsg()" style="width: 60px; margin: 0;">🚀</button>
+        <div id="setupArea">
+            <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_m6cu98v2.json" speed="1" style="width: 150px; height: 150px; margin: 0 auto;" loop autoplay></lottie-player>
+            <input type="text" id="userNameInput" placeholder="ناوەکەت بنووسە">
+            <button onclick="showJoin()">چوونە ژوورەوە</button>
+            <button style="background:none; border: 2px solid var(--accent); color: var(--accent);" onclick="showHost()">دروستکردنی ژوور (G.O.D)</button>
         </div>
 
-        <div id="faceOffBox" class="hidden" style="margin-top: 20px; padding: 15px; border: 1px dashed var(--accent); border-radius: 20px;">
-            <p style="font-size: 12px;">کارت: فەیـس ئۆف! ڕۆڵەکەت بدە بە کەسێک:</p>
-            <select id="targetPlayerSelect" style="width:100%; padding:10px; border-radius:10px; background:#000; color:#fff;"></select>
-            <button onclick="useFaceOff()">ناردنی ڕۆڵ</button>
+        <div id="hostArea" class="hidden">
+            <h3 style="color:var(--accent)">کۆد: <span id="roomDisplay">-</span></h3>
+            <textarea id="rolesList" rows="3">مافیا، مافیا، دکتۆر، پۆلیس، هاوڵاتی، هاوڵاتی</textarea>
+            <div id="playersInRoom" style="margin: 10px 0;"></div>
+            <button onclick="distributeRoles()">🎲 دابەشکردن و دەستپێکردن</button>
+            <button style="background: #333;" onclick="startAI()">🤖 زیادکردنی AI</button>
         </div>
 
-        <button id="nextPhaseBtn" class="hidden" style="background: #444; color: #fff; margin-top: 15px;" onclick="nextPhase()">Next Phase ⏭️</button>
-    </div>
-</div>
+        <div id="gameArea" class="hidden">
+            <div id="phaseInfo" style="color:#888; font-size:14px;">قۆناغ: چاوەڕوانبە...</div>
+            <div id="timerDisplay" style="font-size: 22px; color: #ff4757; margin: 10px;">30</div>
+            <div id="roleDisplay" class="role-display">؟</div>
+            <div id="mafiaList" style="color: #ff4757; font-size: 14px; margin-bottom: 15px;"></div>
 
-<div class="bottom-nav">
-    <span>📊</span><span>👤</span>
-    <div style="width:55px; height:55px; background:var(--accent); border-radius:50%; margin-top:-35px; display:flex; align-items:center; justify-content:center; color:#000; font-size: 24px;">🏠</div>
-    <span>🔍</span><span>🔔</span>
+            <div id="chatBox"></div>
+            <div style="display:flex; gap:5px;">
+                <input type="text" id="msgInput" placeholder="نامە..." style="flex:1; margin:0;">
+                <button onclick="sendMsg()" style="width:60px; margin:0;">🚀</button>
+            </div>
+
+            <div id="faceOffBox" class="hidden" style="margin-top:20px; border: 1px dashed var(--accent); padding:15px; border-radius:20px;">
+                <p style="font-size:12px;">کارت: فەیـس ئۆف! ڕۆڵەکەت بدە بە کەسێک:</p>
+                <select id="targetSelect"></select>
+                <button onclick="useFaceOff()">ناردنی ڕۆڵ</button>
+            </div>
+
+            <button id="nextBtn" class="hidden" style="margin-top:15px; background:#444;" onclick="nextPhase()">Next Phase ⏭️</button>
+        </div>
+    </div>
 </div>
 
 <script>
 // Firebase Config
-const firebaseConfig = { 
-    apiKey: "AIzaSyDzASH3my7ynrQrxAL_rqVXxElL4dDcuyA", 
-    databaseURL: "https://mafia-game-57dd4-default-rtdb.firebaseio.com/" 
-};
+const firebaseConfig = { apiKey: "AIzaSyDzASH3my7ynrQrxAL_rqVXxElL4dDcuyA", databaseURL: "https://mafia-game-57dd4-default-rtdb.firebaseio.com/" };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-let myRoom = "", myId = "", myName = "", myCurrentRole = "", currentPhase = "Role";
+let myRoom = "", myId = "", myName = "", myRole = "", currentPhase = "Role";
 
-// --- HOST FUNCTIONS ---
+// 1. HOST LOGIC
 function showHost() {
     myName = userNameInput.value; if(!myName) return alert("ناو بنووسە");
     myRoom = Math.floor(1000 + Math.random() * 9000);
@@ -100,54 +110,57 @@ function showHost() {
     setupArea.classList.add("hidden");
     hostArea.classList.remove("hidden");
     db.ref("rooms/" + myRoom).set({ exists: true, phase: "Role" });
-    
     db.ref("rooms/" + myRoom + "/players").on("value", snap => {
-        let h = ""; let players = snap.val() || {};
-        Object.keys(players).forEach(id => {
-            h += `<div class="player-tag">${players[id].name} <span onclick="kill('${id}')" style="cursor:pointer; color:red;">❌</span></div>`;
-        });
+        let h = ""; let p = snap.val() || {};
+        Object.keys(p).forEach(id => { h += `<div class="player-tag">${p[id].name} <span onclick="godKill('${id}')" style="color:red;cursor:pointer">❌</span></div>`; });
         playersInRoom.innerHTML = h;
     });
 }
 
-// --- JOIN FUNCTIONS ---
+// 2. JOIN LOGIC
 function showJoin() {
     myName = userNameInput.value; if(!myName) return alert("ناو بنووسە");
-    let code = prompt("کۆدی ژوور بنووسە:"); if(!code) return;
+    let code = prompt("کۆدی ژوور:"); if(!code) return;
     db.ref("rooms/" + code).once("value", snap => {
-        if(!snap.exists()) return alert("ئەم ژوورە بوونی نییە!");
+        if(!snap.exists()) return alert("ژوور نییە");
         myRoom = code;
         setupArea.classList.add("hidden");
         gameArea.classList.remove("hidden");
-        
         let ref = db.ref("rooms/" + myRoom + "/players").push();
         myId = ref.key;
         ref.set({ name: myName, role: "چاوەڕوانبە...", status: "alive", isAI: false });
 
-        // Listen for Phase Changes
         db.ref("rooms/" + myRoom + "/phase").on("value", s => {
             currentPhase = s.val();
-            phaseDisplay.innerText = "قۆناغ: " + currentPhase;
+            phaseInfo.innerText = "قۆناغ: " + currentPhase;
             if(currentPhase === "Vote 🗳️") startTimer(30);
         });
 
-        // Listen for Player Data (Roles, Face-off)
         ref.on("value", s => {
             let d = s.val(); if(!d) return;
-            myCurrentRole = d.role;
+            myRole = d.role;
             if(d.status === "alive") {
                 roleDisplay.innerText = d.role;
-                if(d.role === "مافیا") showMafiaList();
+                if(d.role === "مافیا") showMafias();
             } else {
                 roleDisplay.innerText = "دەرکرایت!";
-                if(d.card === "فەیـس ئۆف") { faceOffBox.classList.remove("hidden"); fillTargetList(); }
+                if(d.card === "فەیـس ئۆف") { faceOffBox.classList.remove("hidden"); fillTargets(); }
                 else if(d.card === "بەکارهێنرا") { faceOffBox.classList.add("hidden"); roleDisplay.innerText = "ڕۆڵەکەت گواسترایەوە"; }
             }
         });
     });
 }
 
-// --- GAME LOGIC ---
+// 3. AI SYSTEM
+function startAI() {
+    for(let i=0; i<3; i++) {
+        let r = db.ref("rooms/" + myRoom + "/players").push();
+        r.set({ name: "🤖 AI_" + Math.floor(Math.random()*99), isAI: true, role: "", status: "alive" });
+    }
+    alert("🤖 ٣ ڕۆبۆت هاتنە ژوورەوە!");
+}
+
+// 4. GAME FUNCTIONS
 function distributeRoles() {
     let r = rolesList.value.split("،").map(x => x.trim());
     db.ref("rooms/" + myRoom + "/players").once("value", snap => {
@@ -157,41 +170,31 @@ function distributeRoles() {
             db.ref("rooms/" + myRoom + "/players/" + id).update({ role: shuffled[i] || "هاوڵاتی", status: "alive", card: "" });
         });
         db.ref("rooms/" + myRoom).update({ phase: "Night 🌙" });
-        nextPhaseBtn.classList.remove("hidden");
+        nextBtn.classList.remove("hidden");
     });
 }
 
-function kill(id) {
-    let mode = confirm("کارت (OK) یان کوشتن (Cancel)؟");
+function godKill(id) {
+    let mode = confirm("بۆ فەیـس ئۆف (OK) دابگرە، بۆ کوشتن (Cancel)");
     db.ref("rooms/" + myRoom + "/players/" + id).update({ status: "dead", card: mode ? "فەیـس ئۆف" : "" });
 }
 
-function showMafiaList() {
-    db.ref("rooms/" + myRoom + "/players").once("value", snap => {
-        let p = snap.val(); let m = [];
-        Object.keys(p).forEach(id => { if(p[id].role === "مافیا" && id !== myId) m.push(p[id].name); });
-        mafiaPartners.innerText = m.length > 0 ? "هاوڕێکانت: " + m.join(", ") : "بەتەنیا مافیایت";
-    });
-}
-
-function fillTargetList() {
-    db.ref("rooms/" + myRoom + "/players").once("value", snap => {
-        let p = snap.val(); let h = "";
-        Object.keys(p).forEach(id => { if(id !== myId && p[id].status === "alive") h += `<option value="${id}">${p[id].name}</option>`; });
-        targetPlayerSelect.innerHTML = h;
-    });
-}
-
 function useFaceOff() {
-    let t = targetPlayerSelect.value;
-    db.ref("rooms/" + myRoom + "/players/" + t).update({ role: myCurrentRole });
+    let target = targetSelect.value;
+    db.ref("rooms/" + myRoom + "/players/" + target).update({ role: myRole });
     db.ref("rooms/" + myRoom + "/players/" + myId).update({ card: "بەکارهێنرا" });
+    glitchEffect();
 }
 
-// --- CHAT ---
+function glitchEffect() {
+    document.body.classList.add("glitch");
+    setTimeout(() => document.body.classList.remove("glitch"), 500);
+}
+
+// 5. CHAT & TIMER
 function sendMsg() {
-    let txt = msgInput.value; if(!txt) return;
-    db.ref("rooms/" + myRoom + "/chat").push({ user: myName, text: txt });
+    let t = msgInput.value; if(!t) return;
+    db.ref("rooms/" + myRoom + "/chat").push({ user: myName, text: t });
     msgInput.value = "";
 }
 db.ref("rooms/" + myRoom + "/chat").on("value", snap => {
@@ -200,36 +203,31 @@ db.ref("rooms/" + myRoom + "/chat").on("value", snap => {
     chatBox.scrollTop = chatBox.scrollHeight;
 });
 
-// --- TIMER & PHASES ---
-function startTimer(sec) {
-    let t = sec; timer.innerText = t;
-    let i = setInterval(() => { t--; timer.innerText = t; if(t <= 0) clearInterval(i); }, 1000);
-}
-function nextPhase() {
-    let phases = ["Role", "Night 🌙", "Day ☀️", "Vote 🗳️"];
-    let nextIdx = (phases.indexOf(currentPhase) + 1) % phases.length;
-    db.ref("rooms/" + myRoom).update({ phase: phases[nextIdx] });
+function startTimer(s) {
+    let t = s; timerDisplay.innerText = t;
+    let i = setInterval(() => { t--; timerDisplay.innerText = t; if(t<=0) clearInterval(i); }, 1000);
 }
 
-// =======================
-// 🤖 AI BRAIN SYSTEM
-// =======================
-function addAI() {
-    let ref = db.ref("rooms/" + myRoom + "/players").push();
-    ref.set({
-        name: "🤖 ڕۆبۆت_" + Math.floor(Math.random() * 100),
-        isAI: true, role: "", status: "alive", brain: { suspicion: {} }
+function nextPhase() {
+    let ps = ["Role", "Night 🌙", "Day ☀️", "Vote 🗳️"];
+    let next = ps[(ps.indexOf(currentPhase) + 1) % ps.length];
+    db.ref("rooms/" + myRoom).update({ phase: next });
+}
+
+function fillTargets() {
+    db.ref("rooms/" + myRoom + "/players").once("value", snap => {
+        let p = snap.val(); let h = "";
+        Object.keys(p).forEach(id => { if(id !== myId && p[id].status === "alive") h += `<option value="${id}">${p[id].name}</option>`; });
+        targetSelect.innerHTML = h;
     });
 }
-function startAI() {
-    for(let i=0; i<3; i++) addAI();
-    setInterval(() => {
-        if(currentPhase === "Day ☀️" && Math.random() < 0.3) {
-            let msgs = ["من بێتاوانم 😐", "سەیری فڵان کەس بکەن 🤔", "کێ مافیایە؟"];
-            db.ref("rooms/" + myRoom + "/chat").push({ user: "🤖 ڕۆبۆت", text: msgs[Math.floor(Math.random()*msgs.length)] });
-        }
-    }, 5000);
-    alert("🤖 ٣ ڕۆبۆت هاتنە ناو یارییەکە!");
+
+function showMafias() {
+    db.ref("rooms/" + myRoom + "/players").once("value", snap => {
+        let p = snap.val(); let m = [];
+        Object.keys(p).forEach(id => { if(p[id].role === "مافیا" && id !== myId) m.push(p[id].name); });
+        mafiaList.innerText = m.length > 0 ? "مافیاکان: " + m.join("، ") : "بەتەنیا مافیایت";
+    });
 }
 </script>
 </body>
