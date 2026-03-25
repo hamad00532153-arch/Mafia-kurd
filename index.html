@@ -1,167 +1,221 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="ku">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAFIA ULTRA PRO</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mafia Ultra Pro MAX</title>
 
-    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+<!-- Lottie for animation -->
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 
-    <style>
-        :root { --accent: #00f2ff; --bg: #000; --card: #111; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; overflow: hidden; height: 100vh; }
-        .app-header { display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid #222; align-items: center; }
-        .container { padding: 20px; display: flex; flex-direction: column; align-items: center; height: 80vh; justify-content: center; }
-        .main-card { width: 100%; max-width: 400px; background: var(--card); border-radius: 35px; padding: 25px; border: 1px solid #333; text-align: center; box-sizing: border-box;}
-        input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 15px; border: 1px solid #444; background: #000; color: #fff; text-align: center; }
-        button { width: 95%; padding: 16px; margin: 8px 0; border-radius: 18px; border: none; background: var(--accent); color: #000; font-weight: 900; cursor: pointer; }
-        .btn-outline { background: none; color: var(--accent); border: 2px solid var(--accent); }
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 70px; background: #1a1a1a; display: flex; justify-content: space-around; align-items: center; border-radius: 25px 25px 0 0; }
-        .hidden { display: none; }
-        .player-tag { background: #222; padding: 10px; margin: 5px; border-radius: 10px; display: inline-block; font-size: 14px; }
-        .role-box { font-size: 35px; color: var(--accent); font-weight: 900; margin: 20px 0; }
-    </style>
+<style>
+:root { --accent:#00f2ff; --bg:#000; --card:#111; }
+body { font-family:'Segoe UI',sans-serif; background:var(--bg); color:white; margin:0; overflow:hidden; height:100vh; }
+.app-header { display:flex; justify-content:space-between; padding:15px 20px; border-bottom:1px solid #222; align-items:center; }
+.container { padding:20px; display:flex; flex-direction:column; align-items:center; height:80vh; justify-content:center; }
+.main-card { width:100%; max-width:400px; background:var(--card); border-radius:35px; padding:25px; border:1px solid #333; text-align:center; box-sizing:border-box;}
+input { width:90%; padding:15px; margin:10px 0; border-radius:15px; border:1px solid #444; background:#000; color:#fff; text-align:center; }
+button { width:95%; padding:16px; margin:8px 0; border-radius:18px; border:none; background:var(--accent); color:#000; font-weight:900; cursor:pointer; }
+.btn-outline { background:none; color:var(--accent); border:2px solid var(--accent); }
+.bottom-nav { position:fixed; bottom:0; width:100%; height:70px; background:#1a1a1a; display:flex; justify-content:space-around; align-items:center; border-radius:25px 25px 0 0; }
+.hidden { display:none; }
+.player-tag { background:#222; padding:10px; margin:5px; border-radius:10px; display:inline-block; font-size:14px; }
+.role-box { font-size:35px; color:var(--accent); font-weight:900; margin:20px 0; }
+#chatBox { height:150px; overflow:auto; background:#111; margin:10px; padding:10px; border-radius:10px; }
+#voteBox button { margin:3px; padding:8px; border-radius:10px; border:none; background:var(--accent); font-weight:700; color:#000; cursor:pointer; }
+#timer { font-size:18px; color:#ff6b81; margin:10px 0; }
+</style>
 </head>
-<body>
 
+<body>
 <div class="app-header">
-    <div style="font-size: 20px;">⚙️</div>
-    <div style="font-weight: bold;">MAFIA ULTRA PRO</div>
+    <div style="font-size:20px;">⚙️</div>
+    <div style="font-weight:bold;">MAFIA ULTRA PRO MAX</div>
     <img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Flag_of_Kurdistan.svg" width="30">
 </div>
 
 <div class="container">
-    <div id="setupArea" class="main-card">
-        <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_m6cu98v2.json" speed="1" style="width: 150px; height: 150px; margin: 0 auto;" loop autoplay></lottie-player>
-        <h2>بەخێربێیت</h2>
-        <input type="text" id="userNameInput" placeholder="ناوەکەت لێرە بنووسە">
-        <button onclick="showJoin()">چوونە ژوورەوە</button>
-        <button class="btn-outline" onclick="showHost()">دروستکردنی ژوور (گاد)</button>
+
+<!-- Home / Setup -->
+<div id="setupArea" class="main-card">
+    <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_m6cu98v2.json" speed="1" style="width:150px;height:150px;margin:0 auto;" loop autoplay></lottie-player>
+    <h2>بەخێربێیت</h2>
+    <input type="text" id="userNameInput" placeholder="ناوەکەت لێرە بنووسە">
+    <button onclick="showJoin()">چوونە ژوورەوە</button>
+    <button class="btn-outline" onclick="showHost()">دروستکردنی ژوور (گاد)</button>
+</div>
+
+<!-- Host Area -->
+<div id="hostArea" class="main-card hidden">
+    <h3>کۆدی ژوور: <span id="roomDisplay" style="color:var(--accent)">-</span></h3>
+    <textarea id="rolesList" style="width:90%; background:#000; color:#fff; border-radius:10px; padding:10px;">مافیا، مافیا، دکتۆر، پۆلیس، هاوڵاتی</textarea>
+    <div id="playersInRoom" style="margin:15px 0;"></div>
+    <button onclick="distributeRoles()">🎲 دابەشکردنی ڕۆڵەکان</button>
+</div>
+
+<!-- Game Area -->
+<div id="gameArea" class="main-card hidden">
+    <div id="statusMsg" style="font-size:14px; color:#888;"></div>
+    <div id="roleDisplay" class="role-box">؟</div>
+    <div id="mafiaPartners" style="color:#ff4757; margin-bottom:10px;"></div>
+    
+    <div id="faceOffBox" class="hidden" style="border:1px dashed var(--accent); padding:15px; border-radius:20px;">
+        <p style="font-size:12px;">کارت: فەیـس ئۆف! ڕۆڵەکەت بدە بە کەسێک:</p>
+        <select id="targetPlayer" style="width:100%; padding:10px; border-radius:10px; margin-bottom:10px;"></select>
+        <button onclick="useFaceOff()">ناردنی ڕۆڵ</button>
     </div>
 
-    <div id="hostArea" class="main-card hidden">
-        <h3>کۆدی ژوور: <span id="roomDisplay" style="color:var(--accent)">-</span></h3>
-        <textarea id="rolesList" style="width:90%; background:#000; color:#fff; border-radius:10px; padding:10px;">مافیا، مافیا، دکتۆر، پۆلیس، هاوڵاتی</textarea>
-        <div id="playersInRoom" style="margin: 15px 0;"></div>
-        <button onclick="distributeRoles()">🎲 دابەشکردنی ڕۆڵەکان</button>
-    </div>
+    <div id="voteBox"></div>
+    <div id="chatBox"></div>
+    <input id="msg" placeholder="نامە..." style="width:90%;padding:10px;border-radius:10px;margin:5px 0;">
+    <button onclick="sendMsg()">Send</button>
 
-    <div id="gameArea" class="main-card hidden">
-        <div id="statusMsg" style="font-size: 14px; color: #888;"></div>
-        <div id="roleDisplay" class="role-box">؟</div>
-        <div id="mafiaPartners" style="color: #ff4757; margin-bottom: 10px;"></div>
-        
-        <div id="faceOffBox" class="hidden" style="border: 1px dashed var(--accent); padding: 15px; border-radius: 20px;">
-            <p style="font-size: 12px;">کارت: فەیـس ئۆف! ڕۆڵەکەت بدە بە کەسێک:</p>
-            <select id="targetPlayer" style="width:100%; padding:10px; border-radius:10px; margin-bottom:10px;"></select>
-            <button onclick="useFaceOff()">ناردنی ڕۆڵ</button>
-        </div>
-    </div>
+    <div id="timer"></div>
+    <button onclick="nextPhase()">Next Phase ⏭️</button>
+</div>
+
 </div>
 
 <div class="bottom-nav">
-    <span>📊</span><span>👤</span><div style="width:50px; height:50px; background:var(--accent); border-radius:50%; margin-top:-30px; display:flex; align-items:center; justify-content:center; color:#000;">🏠</div><span>🔍</span><span>🔔</span>
+    <span>📊</span><span>👤</span><div style="width:50px;height:50px;background:var(--accent);border-radius:50%;margin-top:-30px;display:flex;align-items:center;justify-content:center;color:#000;">🏠</div><span>🔍</span><span>🔔</span>
 </div>
 
 <script>
-// 🔥 Firebase CONFIG
-const firebaseConfig = {
-  apiKey: "AIzaSyDzASH3my7ynrQrxAL_rqVXxElL4dDcuyA",
-  databaseURL: "https://mafia-game-57dd4-default-rtdb.firebaseio.com/"
-};
+// Firebase config
+const firebaseConfig = { apiKey:"AIzaSyDzASH3my7ynrQrxAL_rqVXxElL4dDcuyA", databaseURL:"https://mafia-game-57dd4-default-rtdb.firebaseio.com/" };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-let myRoom = ""; let myId = ""; let myName = ""; let myCurrentRole = "";
+let myRoom="", myId="", myName="", myCurrentRole="", phase="Role", votes={};
 
-function showHost() {
+// Show Host Area
+function showHost(){
     myName = userNameInput.value; if(!myName) return alert("ناو بنووسە");
-    myRoom = Math.floor(1000 + Math.random() * 9000);
+    myRoom = Math.floor(1000 + Math.random()*9000);
     roomDisplay.innerText = myRoom;
     setupArea.classList.add("hidden");
     hostArea.classList.remove("hidden");
-    db.ref("rooms/" + myRoom).set({ exists: true });
+    db.ref("rooms/"+myRoom).set({exists:true});
     
-    db.ref("rooms/" + myRoom + "/players").on("value", snap => {
-        let h = ""; let players = snap.val() || {};
-        Object.keys(players).forEach(id => {
+    db.ref("rooms/"+myRoom+"/players").on("value", snap=>{
+        let h=""; let players = snap.val()||{};
+        Object.keys(players).forEach(id=>{
             h += `<div class="player-tag">${players[id].name} <span onclick="kill('${id}')">❌</span></div>`;
         });
         playersInRoom.innerHTML = h;
     });
 }
 
-function showJoin() {
+// Show Join
+function showJoin(){
     myName = userNameInput.value; if(!myName) return alert("ناو بنووسە");
-    let code = prompt("کۆدی ژوور بنووسە:");
-    if(!code) return;
-    
-    db.ref("rooms/" + code).once("value", snap => {
+    let code = prompt("کۆدی ژوور بنووسە:"); if(!code) return;
+    db.ref("rooms/"+code).once("value", snap=>{
         if(!snap.exists()) return alert("ژوور نییە");
         myRoom = code;
         setupArea.classList.add("hidden");
         gameArea.classList.remove("hidden");
-        statusMsg.innerText = "پەیوەست بوویت بە ژووری " + code;
+        statusMsg.innerText = "پەیوەست بوویت بە ژووری "+code;
         
-        let ref = db.ref("rooms/" + code + "/players").push();
+        let ref = db.ref("rooms/"+code+"/players").push();
         myId = ref.key;
-        ref.set({ name: myName, role: "چاوەڕوانبە...", status: "alive" });
+        ref.set({name:myName, role:"چاوەڕوانبە...", status:"alive", card:""});
         
-        ref.on("value", s => {
+        ref.on("value", s=>{
             let data = s.val(); if(!data) return;
             myCurrentRole = data.role;
-            if(data.status === "alive") {
+            if(data.status==="alive"){
                 roleDisplay.innerText = data.role;
-                if(data.role === "مافیا") showMafias();
+                if(data.role==="مافیا") showMafias();
             } else {
                 roleDisplay.innerText = "دەرکرایت!";
-                if(data.card === "فەیـس ئۆف") { faceOffBox.classList.remove("hidden"); fillPlayers(); }
-                else if(data.card === "بەکارهێنرا") { faceOffBox.classList.add("hidden"); roleDisplay.innerText = "ڕۆڵەکەت گواسترایەوە"; }
+                if(data.card==="فەیـس ئۆف") { faceOffBox.classList.remove("hidden"); fillPlayers(); }
+                else if(data.card==="بەکارهێنرا") { faceOffBox.classList.add("hidden"); roleDisplay.innerText="ڕۆڵەکەت گواسترایەوە"; }
             }
         });
     });
 }
 
-function distributeRoles() {
-    let r = rolesList.value.split("،").map(x => x.trim());
-    db.ref("rooms/" + myRoom + "/players").once("value", snap => {
+// Distribute Roles
+function distributeRoles(){
+    let r = rolesList.value.split("،").map(x=>x.trim());
+    db.ref("rooms/"+myRoom+"/players").once("value", snap=>{
         let ids = Object.keys(snap.val());
-        let shuffled = r.sort(() => Math.random() - 0.5);
-        ids.forEach((id, i) => {
-            db.ref("rooms/" + myRoom + "/players/" + id).update({ role: shuffled[i] || "هاوڵاتی", status: "alive", card: "" });
-        });
+        let shuffled = r.sort(()=>Math.random()-0.5);
+        ids.forEach((id,i)=>{ db.ref("rooms/"+myRoom+"/players/"+id).update({role:shuffled[i]||"هاوڵاتی", status:"alive", card:""}); });
     });
 }
 
-function showMafias() {
-    db.ref("rooms/" + myRoom + "/players").once("value", snap => {
-        let p = snap.val(); let m = [];
-        Object.keys(p).forEach(id => { if(p[id].role === "مافیا" && id !== myId) m.push(p[id].name); });
-        mafiaPartners.innerText = m.length > 0 ? "هاوڕێکانت: " + m.join(", ") : "بەتەنیا مافیایت";
+// Show Mafia Partners
+function showMafias(){
+    db.ref("rooms/"+myRoom+"/players").once("value", snap=>{
+        let p = snap.val(); let m=[];
+        Object.keys(p).forEach(id=>{ if(p[id].role==="مافیا" && id!==myId) m.push(p[id].name); });
+        mafiaPartners.innerText = m.length>0 ? "هاوڕێکانت: "+m.join(", ") : "بەتەنیا مافیایت";
     });
 }
 
-function fillPlayers() {
-    db.ref("rooms/" + myRoom + "/players").once("value", snap => {
-        let p = snap.val(); let h = "";
-        Object.keys(p).forEach(id => { if(id !== myId && p[id].status === "alive") h += `<option value="${id}">${p[id].name}</option>`; });
-        targetPlayer.innerHTML = h;
+// Fill Face-Off Players
+function fillPlayers(){
+    db.ref("rooms/"+myRoom+"/players").once("value", snap=>{
+        let p = snap.val(); let h="";
+        Object.keys(p).forEach(id=>{ if(id!==myId && p[id].status==="alive") h+=`<option value="${id}">${p[id].name}</option>`; });
+        targetPlayer.innerHTML=h;
     });
 }
 
-function useFaceOff() {
+// Use Face-Off
+function useFaceOff(){
     let target = targetPlayer.value;
-    db.ref("rooms/" + myRoom + "/players/" + target).update({ role: myCurrentRole });
-    db.ref("rooms/" + myRoom + "/players/" + myId).update({ card: "بەکارهێنرا" });
+    db.ref("rooms/"+myRoom+"/players/"+target).update({role:myCurrentRole});
+    db.ref("rooms/"+myRoom+"/players/"+myId).update({card:"بەکارهێنرا"});
     alert("ڕۆڵەکەت نارد بۆ هاوڕێکەت!");
 }
 
-function kill(id) {
+// Kill Player
+function kill(id){
     let c = confirm("ئەو یاریزانە بکوژرێت یان کارت؟ (OK=کارت، Cancel=کوشتن)");
-    db.ref("rooms/" + myRoom + "/players/" + id).update({ status: "dead", card: c ? "فەیـس ئۆف" : "" });
+    db.ref("rooms/"+myRoom+"/players/"+id).update({status:"dead", card:c?"فەیـس ئۆف":""});
+}
+
+// Chat
+function sendMsg(){
+    let m = msg.value; if(!m) return;
+    db.ref("rooms/"+myRoom+"/chat").push({user:myName,text:m});
+    msg.value="";
+}
+db.ref("rooms/"+myRoom+"/chat").on("value", snap=>{
+    let data = snap.val()||{}; chatBox.innerHTML="";
+    Object.keys(data).forEach(id=>{ chatBox.innerHTML+=`<div>${data[id].user}: ${data[id].text}</div>`; });
+});
+
+// Voting
+function vote(p){ votes[p]=(votes[p]||0)+1; }
+function endVote(){
+    let max=0, dead=null;
+    Object.keys(votes).forEach(p=>{ if(votes[p]>max){ max=votes[p]; dead=p; } });
+    alert("دەرهێنرا: "+dead); votes={};
+}
+
+// Phase Timer
+function startTimer(sec){
+    let t=sec; timer.innerText=t;
+    let i=setInterval(()=>{ t--; timer.innerText=t; if(t<=0) clearInterval(i); },1000);
+}
+
+// Next Phase
+function nextPhase(){
+    if(phase==="Role") phase="Night 🌙";
+    else if(phase==="Night 🌙") phase="Day ☀️";
+    else if(phase==="Day ☀️") phase="Vote 🗳️";
+    else phase="Role";
+    statusMsg.innerText="Phase: "+phase;
+    startTimer(30);
 }
 </script>
+
 </body>
 </html>
