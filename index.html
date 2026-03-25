@@ -10,11 +10,12 @@
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 
     <style>
-        :root { --accent: #00f2ff; --bg: #02030a; --card: rgba(0,0,0,0.8); }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700;900&display=swap');
+
+        :root { --accent: #00f2ff; --bg: #02030a; --card: rgba(0,0,0,0.85); }
         
-        body { margin: 0; background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; overflow-x: hidden; height: 100vh; position: relative; }
+        body { margin: 0; background: var(--bg); color: white; font-family: 'Noto Sans Arabic', 'Segoe UI', sans-serif; overflow-x: hidden; height: 100vh; position: relative; }
         
-        /* 🌌 ANIMATED GRID BACKGROUND */
         body::before {
             content: ""; position: absolute; width: 200%; height: 200%; z-index: -1;
             background: linear-gradient(#00f2ff11 1px, transparent 1px), linear-gradient(90deg, #00f2ff11 1px, transparent 1px);
@@ -26,14 +27,13 @@
         
         .main-card { 
             width: 100%; max-width: 420px; background: var(--card); backdrop-filter: blur(25px);
-            border-radius: 35px; padding: 30px; border: 1px solid #00f2ff44; 
-            text-align: center; box-shadow: 0 0 40px rgba(0,242,255,0.2); margin-top: 20px;
+            border-radius: 35px; padding: 25px; border: 1px solid #00f2ff44; 
+            text-align: center; box-shadow: 0 0 40px rgba(0,242,255,0.2); margin-top: 10px;
         }
 
-        .logo { font-size: 35px; font-weight: 900; background: linear-gradient(90deg, #00f2ff, #ff00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 3px; margin-bottom: 20px; }
+        .logo { font-size: 32px; font-weight: 900; background: linear-gradient(90deg, #00f2ff, #ff00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; margin-bottom: 15px; }
 
-        input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 20px; border: 1px solid #333; background: #000; color: #fff; text-align: center; font-size: 16px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--accent); box-shadow: 0 0 10px var(--accent); }
+        input, textarea, select { width: 90%; padding: 14px; margin: 8px 0; border-radius: 18px; border: 1px solid #333; background: #000; color: #fff; text-align: center; font-size: 15px; outline: none; }
         
         button { 
             width: 100%; padding: 16px; margin: 8px 0; border-radius: 20px; border: none; 
@@ -42,13 +42,13 @@
         }
         button:active { transform: scale(0.95); }
 
-        .role-display { font-size: 40px; color: var(--accent); font-weight: 900; margin: 20px 0; text-shadow: 0 0 20px var(--accent); animation: pop 0.5s ease; }
-        @keyframes pop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .role-display { font-size: 38px; color: var(--accent); font-weight: 900; margin: 15px 0; text-shadow: 0 0 20px var(--accent); }
 
-        #chatBox { height: 140px; overflow-y: auto; background: rgba(0,0,0,0.6); border-radius: 20px; padding: 12px; margin: 15px 0; border: 1px solid #222; text-align: right; font-size: 14px; }
-        #chatBox div { margin-bottom: 5px; border-bottom: 1px solid #111; padding-bottom: 3px; }
+        #chatBox { height: 130px; overflow-y: auto; background: rgba(0,0,0,0.6); border-radius: 18px; padding: 10px; margin: 10px 0; border: 1px solid #222; text-align: right; font-size: 13px; }
         
-        .player-tag { display: inline-block; padding: 8px 15px; margin: 5px; background: #111; border-radius: 12px; border: 1px solid #333; font-size: 13px; color: var(--accent); }
+        .player-tag { display: inline-block; padding: 10px 14px; margin: 5px; background: rgba(17,17,17,0.8); border-radius: 15px; border: 1px solid #444; font-size: 12px; transition: 0.3s; position: relative; }
+        .dead-player { opacity: 0.4; text-decoration: line-through; border-color: #ff4757; }
+
         .hidden { display: none; }
         .glitch { animation: glitchEffect 0.2s infinite; }
         @keyframes glitchEffect { 0% { transform: translate(2px,0); } 50% { transform: translate(-2px,0); } 100% { transform: translate(2px,0); } }
@@ -61,7 +61,7 @@
         <h1 class="logo">MAFIA ULTRA</h1>
 
         <div id="setupArea">
-            <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_m6cu98v2.json" speed="1" style="width: 140px; height: 140px; margin: 0 auto;" loop autoplay></lottie-player>
+            <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_m6cu98v2.json" speed="1" style="width: 130px; height: 130px; margin: 0 auto;" loop autoplay></lottie-player>
             <input type="text" id="userNameInput" placeholder="ناوەکەت بنووسە">
             
             <div id="mainButtons">
@@ -77,37 +77,36 @@
         </div>
 
         <div id="hostArea" class="hidden">
-            <h3 style="color:var(--accent); letter-spacing: 2px;">کۆدی ژوور: <span id="roomDisplay" style="color:white; font-size: 28px;">-</span></h3>
-            <textarea id="rolesList" style="width:90%; padding:10px; border-radius:15px; background:#000; color:#fff; border:1px solid #333; text-align:center;">مافیا، مافیا، دکتۆر، پۆلیس، هاوڵاتی، هاوڵاتی</textarea>
-            <div id="playersInRoom" style="margin: 15px 0;"></div>
-            <button onclick="distributeRoles()">🎲 دابەشکردنی ڕۆڵ و دەستپێکردن</button>
-            <button style="background: #333;" onclick="startAI()">🤖 زیادکردنی ڕۆبۆت (AI)</button>
+            <h3 style="color:var(--accent);">کۆدی ژوور: <span id="roomDisplay" style="color:white; font-size: 26px;">-</span></h3>
+            <textarea id="rolesList" rows="2">مافیا، مافیا، دکتۆر، پۆلیس، هاوڵاتی، هاوڵاتی</textarea>
+            <div id="playersInRoom" style="margin: 10px 0;"></div>
+            <button onclick="distributeRoles()">🎲 دابەشکردن و دەستپێکردن</button>
+            <button style="background: #333;" onclick="startAI()">🤖 زیادکردنی AI</button>
         </div>
 
         <div id="gameArea" class="hidden">
-            <div id="phaseInfo" style="color:#888; font-size:14px; text-transform: uppercase;">قۆناغ: چاوەڕوانی یاریزانەکانین</div>
+            <div id="phaseInfo" style="color:#888; font-size:13px;">قۆناغ: چاوەڕوانی...</div>
             <div id="roleDisplay" class="role-display">؟</div>
-            <div id="mafiaList" style="color: #ff4757; font-size: 14px; margin-bottom: 15px; font-weight: bold;"></div>
+            <div id="mafiaList" style="color: #ff4757; font-size: 13px; margin-bottom: 10px; font-weight: bold;"></div>
 
             <div id="chatBox"></div>
-            <div style="display:flex; gap:8px;">
-                <input type="text" id="msgInput" placeholder="نامە بنووسە..." style="flex:1; margin:0;">
-                <button onclick="sendMsg()" style="width:70px; margin:0;">🚀</button>
+            <div style="display:flex; gap:5px;">
+                <input type="text" id="msgInput" placeholder="نامە..." style="flex:1; margin:0;">
+                <button onclick="sendMsg()" style="width:60px; margin:0;">🚀</button>
             </div>
 
-            <div id="faceOffBox" class="hidden" style="margin-top:20px; border: 2px dashed var(--accent); padding:15px; border-radius:25px; background: rgba(0,242,255,0.05);">
-                <p style="font-size:13px; color: var(--accent);">کارت: فەیـس ئۆف! ڕۆڵەکەت بدە بە یەکێک:</p>
-                <select id="targetSelect" style="width:100%; padding:12px; border-radius:15px; background:#000; color:#fff; border:1px solid var(--accent);"></select>
-                <button onclick="useFaceOff()" style="margin-top:10px;">ناردنی ڕۆڵ 📤</button>
+            <div id="faceOffBox" class="hidden" style="margin-top:15px; border: 2px dashed var(--accent); padding:10px; border-radius:20px;">
+                <p style="font-size:12px;">کارت: ڕۆڵەکەت بدە بە کەسێک:</p>
+                <select id="targetSelect"></select>
+                <button onclick="useFaceOff()" style="margin-top:8px;">ناردنی ڕۆڵ 📤</button>
             </div>
 
-            <button id="nextBtn" class="hidden" style="margin-top:20px; background:#222; border: 1px solid #444;" onclick="nextPhase()">قۆناغی داهاتوو ⏭️</button>
+            <button id="nextBtn" class="hidden" style="margin-top:15px; background:#222;" onclick="nextPhase()">قۆناغی داهاتوو ⏭️</button>
         </div>
     </div>
 </div>
 
 <script>
-// --- 🔥 FIREBASE CONFIG (حەمەد - لینکی داتابەیسەکەت) ---
 const firebaseConfig = { 
     apiKey: "AIzaSyDzASH3my7ynrQrxAL_rqVXxElL4dDcuyA", 
     databaseURL: "https://mafia-game-f575f-default-rtdb.firebaseio.com/" 
@@ -117,7 +116,6 @@ const db = firebase.database();
 
 let myRoom = "", myId = "", myName = "", myRole = "", currentPhase = "Role";
 
-// --- 🏠 MAIN NAVIGATION ---
 function prepareJoin() {
     if(!userNameInput.value) return alert("سەرەتا ناوەکەت بنووسە!");
     mainButtons.classList.add("hidden");
@@ -129,26 +127,24 @@ function backToMain() {
     mainButtons.classList.remove("hidden");
 }
 
-// --- 👑 HOST FUNCTIONS ---
 function showHost() {
     myName = userNameInput.value; if(!myName) return alert("ناو بنووسە");
     myRoom = Math.floor(1000 + Math.random() * 8999);
     roomDisplay.innerText = myRoom;
     setupArea.classList.add("hidden");
     hostArea.classList.remove("hidden");
-    
     db.ref("rooms/" + myRoom).set({ exists: true, phase: "Role" });
     
     db.ref("rooms/" + myRoom + "/players").on("value", snap => {
         let h = ""; let p = snap.val() || {};
         Object.keys(p).forEach(id => { 
-            h += `<div class="player-tag">${p[id].name} <span onclick="godKill('${id}')" style="color:red; cursor:pointer; margin-left:5px;">❌</span></div>`; 
+            let deadClass = p[id].status === "dead" ? "dead-player" : "";
+            h += `<div class="player-tag ${deadClass}">${p[id].name} <span onclick="godKill('${id}')" style="color:red; cursor:pointer; font-weight:bold; margin-left:8px;">❌</span></div>`; 
         });
         playersInRoom.innerHTML = h;
     });
 }
 
-// --- 👤 JOIN FUNCTIONS ---
 function confirmJoin() {
     let code = roomCodeInput.value;
     myName = userNameInput.value;
@@ -184,7 +180,6 @@ function confirmJoin() {
     });
 }
 
-// --- 🎲 GAME ENGINE ---
 function distributeRoles() {
     let r = rolesList.value.split("،").map(x => x.trim());
     db.ref("rooms/" + myRoom + "/players").once("value", snap => {
@@ -199,27 +194,30 @@ function distributeRoles() {
 }
 
 function godKill(id) {
-    let mode = confirm("بۆ بەخشینی 'کارت' (OK) دابگرە، بۆ کوشتنی یەکجاری (Cancel)");
-    db.ref("rooms/" + myRoom + "/players/" + id).update({ status: "dead", card: mode ? "فەیـس ئۆف" : "" });
+    let mode = confirm("بۆ بەخشینی 'کارت' (OK) دابگرە، بۆ سڕینەوەی یاریزان (Cancel)");
+    if(mode) {
+        db.ref("rooms/" + myRoom + "/players/" + id).update({ status: "dead", card: "فەیـس ئۆف" });
+    } else {
+        db.ref("rooms/" + myRoom + "/players/" + id).remove();
+    }
 }
 
 function useFaceOff() {
     let target = targetSelect.value;
+    if(!target) return alert("یاریزانێک هەڵبژێرە!");
     db.ref("rooms/" + myRoom + "/players/" + target).update({ role: myRole });
     db.ref("rooms/" + myRoom + "/players/" + myId).update({ card: "بەکارهێنرا" });
     document.body.classList.add("glitch");
     setTimeout(() => document.body.classList.remove("glitch"), 500);
 }
 
-// --- 🤖 AI SYSTEM ---
 function startAI() {
     for(let i=0; i<3; i++) {
         let r = db.ref("rooms/" + myRoom + "/players").push();
-        r.set({ name: "🤖 AI_" + Math.floor(10 + Math.random()*89), isAI: true, role: "", status: "alive" });
+        r.set({ name: "🤖 AI_" + Math.floor(10 + Math.random()*89), isAI: true, role: "هاوڵاتی", status: "alive" });
     }
 }
 
-// --- 💬 CHAT & TOOLS ---
 function sendMsg() {
     let t = msgInput.value; if(!t) return;
     db.ref("rooms/" + myRoom + "/chat").push({ user: myName, text: t });
