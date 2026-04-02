@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAFIA ULTRA PRO - FINAL</title>
+    <title>MAFIA ULTRA PRO - V3 FINAL</title>
 
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
@@ -14,7 +14,7 @@
 
         :root { --accent: #00f2ff; --bg: #02030a; --card: rgba(0,0,0,0.85); }
         
-        body { margin: 0; background: var(--bg); color: white; font-family: 'Noto Sans Arabic', 'Segoe UI', sans-serif; overflow-x: hidden; height: 100vh; position: relative; }
+        body { margin: 0; background: var(--bg); color: white; font-family: 'Noto Sans Arabic', sans-serif; overflow-x: hidden; height: 100vh; position: relative; }
         
         body::before {
             content: ""; position: absolute; width: 200%; height: 200%; z-index: -1;
@@ -46,7 +46,7 @@
 
         #chatBox { height: 130px; overflow-y: auto; background: rgba(0,0,0,0.6); border-radius: 18px; padding: 10px; margin: 10px 0; border: 1px solid #222; text-align: right; font-size: 13px; }
         
-        .player-tag { display: inline-block; padding: 10px 14px; margin: 5px; background: rgba(17,17,17,0.8); border-radius: 15px; border: 1px solid #444; font-size: 12px; transition: 0.3s; position: relative; }
+        .player-tag { display: inline-block; padding: 10px 14px; margin: 5px; background: rgba(17,17,17,0.8); border-radius: 15px; border: 1px solid #444; font-size: 12px; transition: 0.3s; }
         .dead-player { opacity: 0.4; text-decoration: line-through; border-color: #ff4757; }
 
         .hidden { display: none; }
@@ -78,7 +78,7 @@
 
         <div id="hostArea" class="hidden">
             <h3 style="color:var(--accent);">کۆدی ژوور: <span id="roomDisplay" style="color:white; font-size: 26px;">-</span></h3>
-            <textarea id="rolesList" rows="2">مافیا، مافیا، دکتۆر، پۆلیس، هاوڵاتی، هاوڵاتی</textarea>
+            <textarea id="rolesList" rows="2">مافیا، ماتادۆر، سۆلگودمان، دکتۆر، پۆلیس، هاوڵاتی</textarea>
             <div id="playersInRoom" style="margin: 10px 0;"></div>
             <button onclick="distributeRoles()">🎲 دابەشکردن و دەستپێکردن</button>
             <button style="background: #333;" onclick="startAI()">🤖 زیادکردنی AI</button>
@@ -115,6 +115,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 let myRoom = "", myId = "", myName = "", myRole = "", currentPhase = "Role";
+const mafiaRoles = ["مافیا", "ماتادۆر", "سۆلگودمان", "تێرۆریست", "بکوژ"];
 
 function prepareJoin() {
     if(!userNameInput.value) return alert("سەرەتا ناوەکەت بنووسە!");
@@ -170,7 +171,7 @@ function confirmJoin() {
             myRole = d.role;
             if(d.status === "alive") {
                 roleDisplay.innerText = d.role;
-                if(d.role === "مافیا") showMafias();
+                if(mafiaRoles.includes(d.role)) showMafias();
             } else {
                 roleDisplay.innerText = "دەرکرایت! 💀";
                 if(d.card === "فەیـس ئۆف") { faceOffBox.classList.remove("hidden"); fillTargets(); }
@@ -246,9 +247,12 @@ function fillTargets() {
 
 function showMafias() {
     db.ref("rooms/" + myRoom + "/players").once("value", snap => {
-        let p = snap.val(); let m = [];
-        Object.keys(p).forEach(id => { if(p[id].role === "مافیا" && id !== myId) m.push(p[id].name); });
-        mafiaList.innerText = m.length > 0 ? "مافیاکان: " + m.join("، ") : "بەتەنیا مافیایت";
+        let p = snap.val(); 
+        let m = [];
+        Object.keys(p).forEach(id => { 
+            if(mafiaRoles.includes(p[id].role) && id !== myId) m.push(p[id].name + " (" + p[id].role + ")"); 
+        });
+        mafiaList.innerText = m.length > 0 ? "تیمەکەت: " + m.join(" ، ") : "بەتەنیا لە تیمەکەیت";
     });
 }
 </script>
